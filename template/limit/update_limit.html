@@ -1,0 +1,74 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Update User Limit{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container-fluid" style="width: 90%;">
+                        <div class="card">
+                            <div class="card-header"><a href="{% url 'index' %}">Dashboard</a> / <a href="{% url 'get-limit' %}">User Limit List</a> / <span class="active">Update Limit</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Update Limit</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="int_limit" class="form-label">User Download Limit/Day</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="number" id="int_limit" name="int_limit" placeholder="limit/day" 
+                                                value="{{limit_data.limit}}" class="form-control" required>
+                                                <input type="hidden" name="id" value="{{limit_data.id}}">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Valid User download limit is required.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}

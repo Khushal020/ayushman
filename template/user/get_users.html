@@ -1,0 +1,170 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Server User List{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <div class="row m-t-30">
+                            <div class="col-md-12">
+                                <!-- DATA TABLE-->
+                                <h3 class="title-5 m-b-20">user data</h3>
+                                
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <div class="row form-group" style="margin-left:1px;">
+                                    <a href="{% url 'add-user' %}"><button class="au-btn-filter" type="submit"><i class="fa fa-plus"></i>ADD</button></a>
+                                </div>
+                                <div class="table-responsive m-b-40">
+                                    <table class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Image</th>
+                                                <th>Role</th>
+                                                <th>User Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Name</th>
+                                                <th>Gender</th>
+                                                <th>Is Active</th>
+                                                <th>Date Joined</th>
+                                                <th>Last Login</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            {% if userlist %}
+                                                {% for userss in userlist %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+
+                                                    {% if userss.image %}
+                                                        <td><img src="{{userss.image.url}}" alt="User Photo" width="100px" height="100px"></td>
+                                                    {% else %}
+                                                        <td>No Photo Uploaded</td>
+                                                    {% endif %}
+
+                                                    {% if userss.is_superuser %}
+                                                    <td><label class="badge badge-warning p-1">Admin</label></td>
+                                                    {% elif userss.is_staff %}
+                                                    <td><label class="badge badge-info p-1">Staff</label></td>
+                                                    {% else %}
+                                                    <td><label class="badge badge-info">User</label></td>
+                                                    {% endif %}
+
+                                                    <td>{{userss.username}}</td>
+                                                    <td>{{userss.email}}</td>
+                                                    <td>{{userss.phone}}</td>
+                                                    <td>{{userss.first_name}} {{userss.last_name}}</td>
+
+                                                    <td>{{userss.gender}}</td>                                                    
+
+                                                    {% if userss.is_active %}
+                                                        <td><label class="badge badge-success">YES</label></td>
+                                                    {% else %}
+                                                        <td><label class="badge badge-danger">NO</label></td>
+                                                    {% endif %}
+
+                                                    <td>{{userss.date_joined|date:'d-m-Y g:i A'}}</td>
+                                                    <td>{{userss.last_login|date:'d-m-Y g:i A'}}</td>
+
+                                                    <td style="width: 200px;">
+                                                        {% if user.is_superuser %}
+                                                        <a href="{% url 'view-dis-user' %}?id={{userss.id}}" style="padding: 5px;"><button class="btn btn-sm btn-secondary"><i class="fa fa-user"></i></button></a> 
+                                                        {% endif %}
+                                                        <a href="{% url 'share-doc' %}?id={{userss.id}}" style="padding: 5px;"><button class="btn btn-sm btn-primary"><i class="fa fa-share-alt"></i></button></a> 
+                                                        <a href="{% url 'update-user' %}?id={{userss.id}}" style="padding: 5px;"><button class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o"></i></button></a> 
+                                                        <a href="{% url 'delete-user' %}?id={{userss.id}}"><button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a></td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                            <tr><td colspan="11" style="text-align: center; font-size: 15px;">No Data Found</td></tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE-->
+
+                                {% if userlist.has_other_pages %}
+                                        <hr style="padding-bottom: 4px; background-color: brown;" />
+                                        <div class="page" style="margin-right: 20px;">
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination justify-content-end">
+                                                    {% if not userlist.has_previous %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                                    </li>
+                                                    {% else %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?page={{ userlist.previous_page_number }}" tabindex="-1">Previous</a>
+                                                    </li>
+                                                    {% endif %}
+
+                                                    {% if userlist.number|add:'-4' > 1 %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'-5' }}">&hellip;</a></li>
+                                                    {% endif %}
+
+                                                    {% for i in userlist.paginator.page_range %}
+                                                        {% if userlist.number == i %}
+                                                            <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">
+                                                            {{ i }}
+                                                            <span class="sr-only">(current)</span>
+                                                        </span>
+                                                        </li>
+                                                        {% elif i > userlist.number|add:'-5' and i < userlist.number|add:'5' %}
+                                                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    {% if userlist.paginator.num_pages > userlist.number|add:'4' %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'5' }}">&hellip;</a></li>
+                                                    {% endif %}
+
+                                                    {% if userlist.has_next %}
+                                                    <li class="page-item">
+                                                    <a class="page-link" href="?page={{ userlist.next_page_number }}">Next</a>
+                                                    </li>
+                                                    {% else %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="#" tabindex="+1">Next</a>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                        {% endif %}
+
+                            </div>
+                        </div>
+                        {% include 'adminbase/footer.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock mainContent %}

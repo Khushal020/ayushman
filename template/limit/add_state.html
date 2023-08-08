@@ -1,0 +1,72 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Add State{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container-fluid" style="width: 90%;">
+                        <div class="card">
+                            <div class="card-header"><a href="{% url 'index' %}">Dashboard</a> / <a href="{% url 'get-states' %}">State List</a> / <span class="active">Add State</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Add State</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="state_name" class="form-label">Name of the State</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="state_name" name="state_name" placeholder="Enter name" class="form-control" required>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Please choose a state name.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}

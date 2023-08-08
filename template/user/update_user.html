@@ -1,0 +1,144 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Update User{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user"></i>
+                                <strong class="card-title pl-2">Profile Card</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    {% if udata.image %}
+                                    <img class="rounded-circle mx-auto d-block" src="{{udata.image.url}}" alt="Profile Photo" width="12%">
+                                    {% else %}
+                                    <img class="rounded-circle mx-auto d-block" src="{% static 'images/admin/default.png' %}" alt="Card image cap" width="128" height="128">
+                                    {% endif %}
+                                    <h5 class="text-sm-center mt-2 mb-1">{{udata.first_name}} {{udata.last_name}}</h5>
+                                    <div class="location text-sm-center">
+                                        <i class="fa fa-briefcase" aria-hidden="true"></i> Incredible Technology</div>
+                                </div>
+                                <hr>
+                                <div class="card-text text-sm-center">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{udata.username}} &nbsp; | &nbsp;
+                                    <i class="fa fa-envelope" aria-hidden="true"></i> {{udata.email}} &nbsp; | &nbsp;
+                                    <i class="fa fa-phone" aria-hidden="true"></i> {{udata.phone}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Update Information</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="first_name" class="form-label">First Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="first_name" name="fname" placeholder="Enter first name" value="{{udata.first_name}}" class="form-control">
+                                                <input type="hidden" name="id" value="{{udata.id}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="last_name" class="form-label">Last Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="last_name" name="lname" placeholder="Enter last name" value="{{udata.last_name}}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Phone Number</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="phone" name="phone" value="{{udata.phone}}" placeholder="Enter mobile number" class="form-control">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Change photo</lable>
+                                            <div class="photo" style="margin-top: 7px;">
+                                                <input type="file" id="photo" name="photo" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="gender" class="form-label">Gender</lable>
+                                            <div style="margin-top: 7px;">
+                                                <select name="gender" id="gender" class="form-control">
+                                                    <option value="">Please select gender</option>
+                                                    <option value="Male" {{g1}}>Male</option>
+                                                    <option value="Female" {{g2}}>Female</option>
+                                                    <option value="Other" {{g3}}>Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {% if user.is_superuser %}
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Role</lable>
+                                            <div style="margin-top: 7px;">
+                                                <select name="role" id="select" class="form-control" required>
+                                                    <option value="0">Please select role</option>
+                                                    <option value="1" {{r1}}>User</option>
+                                                    <option value="2" {{r2}}>Distributer</option>
+                                                    <option value="3" {{r3}}>Admin</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+<script>
+
+</script>
+
+{% endblock custom_js %}

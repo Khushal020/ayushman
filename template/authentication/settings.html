@@ -1,0 +1,257 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Admin Setting{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container-fluid" style="width: 90%;">
+
+                        {% if messages %}
+                            {% for m in messages %}
+                                {% if m.tags == 'success' %}
+                                <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                <strong>Great!</strong> {{m}}
+                                <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% elif m.tags == 'info' %}
+                                <div style="display: block;" class="alert alert-info alert-dismissible fade show" role="alert" id="remove_alert">
+                                <strong>Nothing!</strong> {{m}}
+                                <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% else %}
+                                <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                <strong>Upps!</strong> {{m}}
+                                <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Email Configuration -->
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Email Configuration</div>
+                            <div class="card-body card-block">
+                                <form method="post" class="" enctype="multipart/form-data" action="{% url 'update-email-configuration' %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="ehost" class="form-label">Email Host</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="ehost" name="ehost" placeholder="Ex. smtp.gmail.com" value="{{edata.email_host}}" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="eport" class="form-label">Email Port</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="eport" name="eport" placeholder="Ex. 587 | 465 | 25" value="{{edata.email_port}}" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-4">
+                                            <lable for="efrom" class="form-label">Email From</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="efrom" name="efrom" placeholder="What receiver will see?" value="{{edata.email_from}}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <lable for="eusername" class="form-label">Email Username</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="eusername" name="eusername" placeholder="Enter your email address" value="{{edata.email_username}}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <lable for="epassword" class="form-label">Email Password</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="password" id="epassword" name="epassword" placeholder="Enter your email password" value="{{edata.email_password}}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <label for="basic-url" class="form-label">Use TLS</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="checkbox" value=True name="tls" {{tls_style}}>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to enable TLS ?" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label for="basic-url" class="form-label">Use SSL</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="checkbox" value=True name="ssl" {{ssl_style}}>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to enable SSL ?" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label for="basic-url" class="form-label">Fail Silently</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="checkbox" value=True name="fail_silently" {{fs_style}}>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to enable Fail Silently ?" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group col-lg-4">
+                                        <lable for="etimeout" class="form-label">Timeout</lable>
+                                        <div class="input-group" style="margin-top: 7px;">
+                                            <input type="number" step="1" id="etimeout" name="etimeout" placeholder="In seconds" value="{{edata.timeout}}" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance Section -->
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Server Maintenance</div>
+                            <div class="card-body card-block">
+                                <form method="post" class="" enctype="multipart/form-data" action="{% url 'set-maintenance' %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            {% if main_style %}
+                                            <label for="basic-url" class="form-label">Server is under Maintenance</label>
+                                            {% else %}
+                                            <label for="basic-url" class="form-label">Server is currently live</label>
+                                            {% endif %}
+                                            <!-- <label for="basic-url" class="form-label">Server Maintenance</label> -->
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="checkbox" value=True name="is_live" {{main_style}}>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to put server under maintenance ?" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Session Delete Section -->
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Clear Session</div>
+                            <div class="card-body card-block">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label for="basic-url" class="form-label">Logout all staff and users by just clicking below button</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <a href="{% url 'logout-all-server-users' %}"><button class="btn btn-danger btn-md">Logout all Staff  & Users</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Memory clearing Section -->
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Clear Unnecessary Storage</div>
+                            <div class="card-body card-block">
+                                <form method="post" class="" enctype="multipart/form-data" action="{% url 'clear-storage' %}">
+                                    {% csrf_token %}
+                                    <label for="basic-url" class="form-label">This will clear unnecessary files(including pdf, image, and video) and make storage space in server.</label><br/>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <!-- <label for="basic-url" class="form-label"></label> -->
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="radio" value="3" name="unnecessary" required>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Clear storage of last 3 days (Exclude today)" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="radio" value="7" name="unnecessary" required>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Clear storage of last 7 days (Exclude today)" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="radio" value="14" name="unnecessary" required>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Clear storage of last 14 days (Exclude today)" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="radio" value="21" name="unnecessary" required>
+                                                    </div>
+                                                    <input type="text" class="form-control" aria-label="Text input with checkbox" value="Clear storage of last 21 days (Exclude today)" disabled>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-danger btn-sm">Clear</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+<script>
+  function changepass(obj) {
+      if($(obj).is(":checked")){
+          document.getElementById('myDIV').style.display = "block"; //Do stuff
+          //alert("Yes checked"); //when checked
+
+          $("#page-header-inner").addClass("sticky");
+      }else{
+          document.getElementById('myDIV').style.display = "none"; //Do stuff
+          //alert("Not checked"); //when not checked
+      }   
+  }
+</script>
+
+{% endblock custom_js %}

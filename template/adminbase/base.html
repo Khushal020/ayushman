@@ -1,0 +1,359 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Fevicon -->
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'images/admin/favicon1.png' %}"/>
+
+    <!-- Title Page-->
+    <title>{% block pagetitle %}{% endblock pagetitle %}</title>
+
+    <!-- Fontfaces CSS-->
+    <link href="{% static 'admin/css/font-face.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/font-awesome-5/css/fontawesome-all.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/mdi-font/css/material-design-iconic-font.min.css' %}" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link href="{% static 'admin/vendor/bootstrap-4.1/bootstrap.min.css' %}" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+    <!-- Vendor CSS-->
+    <link href="{% static 'admin/vendor/animsition/animsition.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/wow/animate.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/css-hamburgers/hamburgers.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/slick/slick.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/select2/select2.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'admin/vendor/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="{% static 'admin/css/theme.css' %}" rel="stylesheet" media="all">
+    <!-- <link href="{% static 'admin/css/form-validation.css' %}" rel="stylesheet" media="all"> -->
+
+    {% block custom_css %}
+    {% endblock custom_css %}
+
+    <style>
+        @media (min-width: 768px) {
+            .modal-xl {
+                width: 90%;
+                max-width:1200px;
+            }
+        }
+    </style>
+
+</head>
+
+<body class="animsition">
+    <div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <header class="header-mobile d-block d-lg-none">
+            <div class="header-mobile__bar">
+                <div class="container-fluid">
+                    <div class="header-mobile-inner">
+                        
+                        <a class="logo" href="{% url 'index' %}">
+                            <!-- <img src="{% static 'images/admin/logo.png' %}" width="15%" alt="Logo"> -->
+                            <img src="{% static 'images/admin/logo.png' %}" alt="Company Logo" width="20%"/>
+                            <!-- <h3>INCREDIBLE <br/>TECHNOLOGY</h3> -->
+                        </a>
+                        <button class="hamburger hamburger--slider" type="button">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar-mobile">
+                <div class="container-fluid">
+                    <ul class="navbar-mobile__list list-unstyled">
+                        <li class="has-sub">
+                            <a class="js-arrow" href="{% url 'index' %}">
+                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                        </li>
+                        {% if user.is_staff %}
+                        <li class="{% if nbar == 'getuser' %}active{% endif %}">
+                            <a href="{% url 'get-user' %}">
+                                <i class="fas fa-users"></i>Server Users</a>
+                        </li>
+                        <li class="{% if nbar == 'share' %}active{% endif %}">
+                            <a href="{% url 'share-doc' %}">
+                                <i class="fas fa-file-text"></i>Share Document</a>
+                        </li>
+                        <!--<li class="{% if nbar == 'share' %}active{% endif %}">
+                            <a href="{% url 'share-doc' %}">
+                                <i class="fas fa-file-text"></i>Share New Document</a>
+                        </li>-->
+                        <li class="{% if nbar == 'states' %}active{% endif %}">
+                            <a href="{% url 'get-states' %}">
+                                <i class="fas fa-map-marker"></i>State List</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                        <li class="{% if nbar == 'limit' %}active{% endif %}">
+                            <a href="{% url 'get-limit' %}">
+                                <i class="fas fa-wrench"></i>Set Limit</a>
+                        </li>
+                        <li class="{% if nbar == 'dataentry' %}active{% endif %}">
+                            <a href="{% url 'get-dataentry-doc' %}">
+                                <i class="fa fa-archive"></i>DataEntry Doc</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <aside class="menu-sidebar d-none d-lg-block">
+            <div class="logo" style="text-align: center;">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'images/admin/logo.png' %}" alt="Company Logo" width="38%"/>
+                </a>
+            </div>
+            <div class="menu-sidebar__content js-scrollbar1">
+                <nav class="navbar-sidebar">
+                    <ul class="list-unstyled navbar__list">
+                        <li class="{% if nbar == 'home' %}active{% endif %}">
+                            <a class="js-arrow" href="{% url 'index' %}">
+                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                        </li>
+                        {% if user.is_staff %}
+                        <li class="{% if nbar == 'getuser' %}active{% endif %}">
+                            <a href="{% url 'get-user' %}">
+                                <i class="fas fa-users"></i>Server Users</a>
+                        </li>
+                        <li class="{% if nbar == 'share' %}active{% endif %}">
+                            <a href="{% url 'share-doc' %}">
+                                <i class="fas fa-file-text"></i>Share Document</a>
+                        </li>
+                        <!--<li class="{% if nbar == 'sharenew' %}active{% endif %}">
+                            <a href="{% url 'share-new-doc' %}">
+                                <i class="fas fa-file-pdf"></i>Share New Doc</a>
+                        </li>-->
+                        <li class="{% if nbar == 'states' %}active{% endif %}">
+                            <a href="{% url 'get-states' %}">
+                                <i class="fas fa-map-marker"></i>State List</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                        <li class="{% if nbar == 'limit' %}active{% endif %}">
+                            <a href="{% url 'get-limit' %}">
+                                <i class="fas fa-wrench"></i>Set Limit</a>
+                        </li>
+                        <li class="{% if nbar == 'dataentry' %}active{% endif %}">
+                            <a href="{% url 'get-dataentry-doc' %}">
+                                <i class="fa fa-archive"></i>DataEntry Doc</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out"></i>Logout</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <header class="header-desktop">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <div class="header-wrap">
+                            <form class="form-header" method="POST">
+                                <!-- {% csrf_token %}
+                                <input class="au-input au-input--xl" type="text" name="search" placeholder="Type to search here..." />
+                                <button class="au-btn--submit" type="submit">
+                                    <i class="zmdi zmdi-search"></i>
+                                </button> &nbsp; -->
+                                
+                            </form>
+                            <div class="header-button">
+                                <div style="margin-right: 20px;"><a href="{% url 'index' %}"></a></div> &nbsp;
+                                <div class="account-wrap">
+                                    <div class="account-item clearfix js-item-menu">
+                                        <div class="image">
+                                            {% if is_photo %}
+                                            <img class="rounded-circle mx-auto d-block" src="{{user.image.url}}" alt="Profile Photo">
+                                            {% else %}
+                                            <img class="rounded-circle mx-auto d-block" src="{% static 'images/admin/default.png' %}" alt="Card image cap" width="128" height="128">
+                                            {% endif %}
+                                        </div>
+                                        <div class="content">
+                                            <a class="js-acc-btn" href="#">{% if user.first_name == '' and user.last_name == '' %}{{user.username}}{% else %}{{user.first_name}} {{user.last_name}}{% endif %}</a>
+                                        </div>
+                                        <div class="account-dropdown js-dropdown">
+                                            <div class="info clearfix">
+                                                <div class="image">
+                                                    <a href="#">
+                                                        {% if is_photo %}
+                                                        <img class="rounded-circle mx-auto d-block" src="{{user.image.url}}" alt="Profile Photo">
+                                                        {% else %}
+                                                        <img class="rounded-circle mx-auto d-block" src="{% static 'images/admin/default.png' %}" alt="Card image cap" width="128" height="128">
+                                                        {% endif %}
+                                                    </a>
+                                                </div>
+                                                <div class="content">
+                                                    <h5 class="name">
+                                                        <a href="#">{% if user.first_name == '' and user.last_name == '' %}{{user.username}}{% else %}{{user.first_name}} {{user.last_name}}{% endif %}</a>
+                                                    </h5>
+                                                    <span class="email">{{user.email}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="account-dropdown__body">
+                                                <div class="account-dropdown__item">
+                                                    <a href="{% url 'view-profile' %}">
+                                                        <i class="zmdi zmdi-account"></i>Profile</a>
+                                                </div>
+                                                {% if user.is_superuser %}
+                                                <div class="account-dropdown__item">
+                                                    <a href="{% url 'settings' %}">
+                                                        <i class="zmdi zmdi-settings"></i>Setting</a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="account-dropdown__footer">
+                                                <a href="{% url 'logout' %}">
+                                                    <i class="zmdi zmdi-power"></i>Logout</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- HEADER DESKTOP-->
+
+            {% if user.is_staff %}
+                <!-- MAIN CONTENT For ADMIN -->
+                {% block mainContent %}
+                {% endblock mainContent %}
+
+            {% else %}
+                <!-- MAIN CONTENT For USER -->
+                {% block mainContentUser %}
+                {% endblock mainContentUser %}
+            {% endif %}
+
+
+            <!-- <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="false">
+                <div class="modal-dialog model-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalToggleLabel">Server Admin List</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <div class="table-responsive m-b-40">
+                            <table class="table table-borderless table-data3">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>User Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>Is Active</th>
+                                        <th>Date Joined</th>
+                                        <th>Last Login</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                    {% if pop_user %}
+                                        {% for userss in pop_user %}
+                                        <tr>
+                                            <td>{{forloop.counter}}</td>
+
+                                            {% if userss.image %}
+                                                <td><img src="{{userss.image.url}}" alt="User Photo" width="100px" height="100px"></td>
+                                            {% else %}
+                                                <td>No Photo Uploaded</td>
+                                            {% endif %}
+
+                                            
+                                            <td>{{userss.username}}</td>
+                                            <td>{{userss.email}}</td>
+                                            <td>{{userss.phone}}</td>
+                                            <td>{{userss.first_name}} {{userss.last_name}}</td>
+
+                                            <td>{{userss.gender}}</td>                                                    
+
+                                            {% if userss.is_active %}
+                                                <td><label class="badge badge-success">YES</label></td>
+                                            {% else %}
+                                                <td><label class="badge badge-danger">NO</label></td>
+                                            {% endif %}
+
+                                            <td>{{userss.date_joined|date:'d-m-Y g:i A'}}</td>
+                                            <td>{{userss.last_login|date:'d-m-Y g:i A'}}</td>
+
+                                            
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                    <tr><td colspan="11" style="text-align: center; font-size: 15px;">No Data Found</td></tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+
+        </div>
+    </div>
+
+    <!-- Jquery JS-->
+    <script src="{% static 'admin/vendor/jquery-3.2.1.min.js' %}"></script>
+    <!-- Bootstrap JS-->
+    <script src="{% static 'admin/vendor/bootstrap-4.1/popper.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/bootstrap-4.1/bootstrap.min.js' %}"></script>
+    <!-- Vendor JS       -->
+    <script src="{% static 'admin/vendor/slick/slick.min.js' %}">
+    </script>
+    <script src="{% static 'admin/vendor/wow/wow.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/animsition/animsition.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js' %}">
+    </script>
+    <script src="{% static 'admin/vendor/counter-up/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/counter-up/jquery.counterup.min.js' %}">
+    </script>
+    <script src="{% static 'admin/vendor/circle-progress/circle-progress.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'admin/vendor/chartjs/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/select2/select2.min.js' %}">
+    </script>
+
+    <!-- Main JS-->
+    <script src="{% static 'admin/js/main.js' %}"></script>
+    <!-- <script src="{% static 'admin/js/form-validation.js' %}"></script> -->
+
+    {% block custom_js %}
+    {% endblock custom_js %}
+
+</body>
+
+</html>
+<!-- end document-->

@@ -1,0 +1,281 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}User Profile{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user"></i>
+                                <strong class="card-title pl-2">Profile Card</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    {% if is_photo %}
+                                    <img class="rounded-circle mx-auto d-block" src="{{user.image.url}}" alt="Profile Photo" width="12%">
+                                    {% else %}
+                                    <img class="rounded-circle mx-auto d-block" src="{% static 'images/admin/default.png' %}" alt="Card image cap" width="128" height="128">
+                                    {% endif %}
+                                    <h5 class="text-sm-center mt-2 mb-1">{{user.first_name}} {{user.last_name}}</h5>
+                                    <div class="location text-sm-center">
+                                        <i class="fa fa-briefcase" aria-hidden="true"></i> Incredible Technology</div>
+                                </div>
+                                <hr>
+                                <div class="card-text text-sm-center">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{user.username}} &nbsp; | &nbsp;
+                                    <i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}} &nbsp; | &nbsp;
+                                    <i class="fa fa-phone" aria-hidden="true"></i> {{user.phone}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Update Information</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="first_name" class="form-label">First Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="first_name" name="fname" placeholder="Enter first name" value="{{user.first_name}}" class="form-control">
+                                                <input type="hidden" id="first_name" name="email"value="{{user.email}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="last_name" class="form-label">Last Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="last_name" name="lname" placeholder="Enter last name" value="{{user.last_name}}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Phone Number</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="phone" name="phone" placeholder="Enter mobile number" class="form-control">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Change photo</lable>
+                                            <div class="photo" style="margin-top: 7px;">
+                                                <input type="file" id="photo" name="photo" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="basic-url" class="form-label">Password</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <div class="input-group-addon">
+                                                    <input class="form-check" type="checkbox" onchange="changepass(this)" value=True name="is_change">
+                                                </div>
+                                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to change your password ?" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <div id="myDIV" style="display:none;">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="password1" class="form-label">Password</label>
+                                                <input type="password" class="form-control" name="password1" id="password1" placeholder="Enter your password">
+                                            </div>
+                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="password2" class="form-label">Re-type Password</label>
+                                                <input type="password" class="form-control" name="password2" id="password2" placeholder="Re-enter your password">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block mainContentUser %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user"></i>
+                                <strong class="card-title pl-2">Profile Card</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    {% if is_photo %}
+                                    <img class="rounded-circle mx-auto d-block" src="{{user.image.url}}" alt="Profile Photo" width="12%">
+                                    {% else %}
+                                    <img class="rounded-circle mx-auto d-block" src="{% static 'images/admin/default.png' %}" alt="Card image cap" width="128" height="128">
+                                    {% endif %}
+                                    <h5 class="text-sm-center mt-2 mb-1">{{user.first_name}} {{user.last_name}}</h5>
+                                    <div class="location text-sm-center">
+                                        <i class="fa fa-briefcase" aria-hidden="true"></i> Incredible Technology</div>
+                                </div>
+                                <hr>
+                                <div class="card-text text-sm-center">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i> {{user.username}} &nbsp; | &nbsp;
+                                    <i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}} &nbsp; | &nbsp;
+                                    <i class="fa fa-phone" aria-hidden="true"></i> {{user.phone}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Update Information</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="first_name" class="form-label">First Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="first_name" name="fname" placeholder="Enter first name" value="{{user.first_name}}" class="form-control">
+                                                <input type="hidden" id="first_name" name="email"value="{{user.email}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="last_name" class="form-label">Last Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="last_name" name="lname" placeholder="Enter last name" value="{{user.last_name}}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Phone Number</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="phone" name="phone" placeholder="Enter mobile number" class="form-control">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="phone" class="form-label">Change photo</lable>
+                                            <div class="photo" style="margin-top: 7px;">
+                                                <input type="file" id="photo" name="photo" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="basic-url" class="form-label">Password</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <div class="input-group-addon">
+                                                    <input class="form-check" type="checkbox" onchange="changepass(this)" value=True name="is_change">
+                                                </div>
+                                                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Do you want to change your password ?" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <div id="myDIV" style="display:none;">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="password1" class="form-label">Password</label>
+                                                <input type="password" class="form-control" name="password1" id="password1" placeholder="Enter your password">
+                                            </div>
+                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="password2" class="form-label">Re-type Password</label>
+                                                <input type="password" class="form-control" name="password2" id="password2" placeholder="Re-enter your password">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContentUser %}
+
+{% block custom_js %}
+
+<script>
+  function changepass(obj) {
+      if($(obj).is(":checked")){
+          document.getElementById('myDIV').style.display = "block"; //Do stuff
+          //alert("Yes checked"); //when checked
+
+          $("#page-header-inner").addClass("sticky");
+      }else{
+          document.getElementById('myDIV').style.display = "none"; //Do stuff
+          //alert("Not checked"); //when not checked
+      }   
+  }
+</script>
+
+{% endblock custom_js %}

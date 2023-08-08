@@ -1,0 +1,207 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Share Documents{% endblock pagetitle %}
+
+{% block custom_css %}
+<style>
+
+</style>
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header" style="color: brown;font-weight: 600;">Document Sharing Section</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" action="{% url 'share-doc-share' %}" class="" id="docID" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="files" class="form-label">Select PDF</lable>
+                                            <div class="photo" style="margin-top: 7px;">
+                                                <input type="file" id="files" name="pdfs" class="form-control" multiple required>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="form-group col-lg-4">
+                                            <lable for="state" class="form-label">State</lable>
+                                            <div style="margin-top: 7px;">
+                                                <select class="form-control" id="state" name="state" aria-label="Default select example" required>
+                                                    <option selected>Select state</option>
+                                                    {% if state_data %}
+                                                        {% for state in state_data %}
+                                                            <option value="{{state.name}}">{{state.name}}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-lg-6">
+                                            <label for="exampleDataList" class="form-label">Select User</label>
+                                            <input class="form-control" list="datalistOptions" name="distributer" value="{{user_data.email}}" 
+                                                    id="exampleDataList" placeholder="Type to search..." required>
+                                            <datalist id="datalistOptions">
+                                                {% if dis_data %}
+                                                    {% for dis in dis_data %}
+                                                        <option value="{{dis.email}}">{{dis.first_name}} {{dis.last_name}}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="basic-url" class="form-label">Add Text</label>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group" style="margin-top: 7px;">
+                                                    <div class="input-group-addon">
+                                                        <input class="form-check" type="checkbox" onchange="addtext(this)" value=True name="is_text">
+                                                    </div>
+                                                    <input type="text" class="form-control" value="Do you want to add additional text ?" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label for="basic-url" class="form-label">On Card</label>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <div class="input-group-addon">
+                                                    <input class="form-check" type="checkbox" value=True name="is_background" checked>
+                                                </div>
+                                                <input type="text" class="form-control" value="Do you want to print Background ?" disabled>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-lg-3">
+                                            <label for="basic-url" class="form-label">&nbsp;</label>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <div class="input-group-addon">
+                                                    <input class="form-check" type="checkbox" value=True name="is_state">
+                                                </div>
+                                                <input type="text" class="form-control" value="Print State ?" disabled>
+                                            </div>
+                                        </div> -->
+                                        
+                                    </div>
+                        
+                                    <div id="myDIV" style="display:none;">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="card_text" class="form-label">Text</label>
+                                                <input type="text" class="form-control" name="card_text" id="card_text" 
+                                                    value="Government of Uttarakhand" placeholder="Ex. Government of Uttarakhand">
+                                            </div>
+                                            <!-- <div class="col-md-3 mb-3">
+                                                <label for="top" class="form-label">From Top</label>
+                                                <input type="number" class="form-control" name="top" id="top" placeholder="In pixel">
+                                            </div>
+                            
+                                            <div class="col-md-3 mb-3">
+                                                <label for="left" class="form-label">From Left</label>
+                                                <input type="number" class="form-control" name="left" id="left" placeholder="In pixel">
+                                            </div> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group mt-3">
+                                        <button type="submit" class="btn btn-success btn-md"><i class="fa fa-share-alt"></i> &nbsp; Share</button>
+                                        <!-- <button type="button" onclick="submitform()" class="btn btn-success btn-md"><i class="fa fa-share-alt"></i> &nbsp; Share</button> -->
+                                        <button type="button" onclick="previewcard()" class="btn btn-warning btn-md"><i class="fa fa-eye"></i>&nbsp; Preview</button>
+                                        <button type="button" onclick="resetbtn()" class="btn btn-danger btn-md"><i class="fa fa-repeat"></i>&nbsp; Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        {% if preview_list %}
+                        {% for preview in preview_list %}
+
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user"></i>
+                                <strong class="card-title pl-2">Card Preview - {{forloop.counter}}</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    <div class="row">
+                                        <!-- <div class="col-lg-1"></div> -->
+                                        <div class="front-view mx-auto d-block mb-4" style="width: 400px; height: 250px; background-color: rgb(190, 189, 189);">
+                                            <img src="media/temp/{{preview}}" />
+                                        </div>
+                                        <!-- <div class="col-lg-1"></div> -->
+                                        <div class="back-view mx-auto d-block" style="width: 400px; height: 250px; background-color: rgb(190, 189, 189);">
+                                            <img src="{% static 'images/preview/back.png' %}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+<script>
+  function addtext(obj) {
+      if($(obj).is(":checked")){
+          document.getElementById('myDIV').style.display = "block"; //Do stuff
+          //alert("Yes checked"); //when checked
+
+          $("#page-header-inner").addClass("sticky");
+      }else{
+          document.getElementById('myDIV').style.display = "none"; //Do stuff
+          //alert("Not checked"); //when not checked
+      }   
+  }
+  function resetbtn() {
+      window.location.href="{% url 'share-doc' %}"
+  }
+  function previewcard() {
+    //   console.log("111111111")
+      document.getElementById('docID').action = "{% url 'preview-doc' %}";
+    //   console.log("2222")
+      document.getElementById('docID').submit()
+  }
+  function submitform()
+  {
+    
+      document.getElementById('docID').active = "{% url 'share-doc-share' %}"
+      document.getElementById('docID').submit()
+
+  }
+</script>
+
+{% endblock custom_js %}

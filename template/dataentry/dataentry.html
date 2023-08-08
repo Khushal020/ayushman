@@ -1,0 +1,131 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}DataEntry Documents{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+
+                        {% if user.is_superuser %}
+                        <div class="row mb-5">
+                            <div class="col-lg-12">
+                                <h2 class="title-1 m-b-25">Documents Created in DataEntry Panel</h2>
+                                <div class="au-card au-card--bg-c3 au-card-top-countries m-b-40">
+                                    <div class="au-card-inner">
+                                        <form method="POST" action="{% url 'share-dataentry-doc-preview' %}">
+                                        {% csrf_token %}
+                                        <div class="mt-2 mb-2">
+                                            <button class="btn btn-md btn-success">Share</button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-top-countries" id="tableID">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Select</th>
+                                                        <th>Document Number</th>
+                                                        <!-- <th>Download</th> -->
+                                                        <th>Date/Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% if pdfList %}
+                                                    {% for share in pdfList %}
+                                                        <tr>
+                                                            <td style="color: grey;">{{forloop.counter}}</td>
+
+                                                            <td style="color: grey;"><input type="checkbox" name="doc{{share}}" value="{{share}}"></td>
+
+                                                            <td style="color: grey;">{{share}}</td>
+                                                            
+                                                            <!-- <td style="color: grey;">{{i}}</td> -->
+                                                            
+                                                            
+                                                            <td style="color: grey;">{{share.serial_number}}</td>
+                                                            <td style="color: grey;">{{share.created_at|date:'d-m-Y g:i A'}}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        </form>
+
+                                        {% if pdfList.has_other_pages %}
+                                        <hr style="padding-bottom: 4px; background-color: brown;" />
+                                        <div class="page" style="margin-right: 20px;">
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination justify-content-end">
+                                                    {% if not pdfList.has_previous %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                                    </li>
+                                                    {% else %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?page={{ pdfList.previous_page_number }}" tabindex="-1">Previous</a>
+                                                    </li>
+                                                    {% endif %}
+
+                                                    {% if pdfList.number|add:'-4' > 1 %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ pdfList.number|add:'-5' }}">&hellip;</a></li>
+                                                    {% endif %}
+
+                                                    {% for i in pdfList.paginator.page_range %}
+                                                        {% if pdfList.number == i %}
+                                                            <li class="page-item active" aria-current="page">
+                                                        <span class="page-link">
+                                                            {{ i }}
+                                                            <span class="sr-only">(current)</span>
+                                                        </span>
+                                                        </li>
+                                                        {% elif i > pdfList.number|add:'-5' and i < pdfList.number|add:'5' %}
+                                                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    {% if pdfList.paginator.num_pages > pdfList.number|add:'4' %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ pdfList.number|add:'5' }}">&hellip;</a></li>
+                                                    {% endif %}
+
+                                                    {% if pdfList.has_next %}
+                                                    <li class="page-item">
+                                                    <a class="page-link" href="?page={{ pdfList.next_page_number }}">Next</a>
+                                                    </li>
+                                                    {% else %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="#" tabindex="+1">Next</a>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        {% endif %}
+                        {% include 'adminbase/footer.html' %}
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+
+{% endblock mainContent %}
+
+
+{% block custom_js %}
+
+
+
+{% endblock custom_js %}

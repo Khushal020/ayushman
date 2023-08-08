@@ -1,0 +1,150 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}User Profile{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="container-fluid" style="width: 90%;">
+                        <div class="card">
+                            <div class="card-header"><a href="{% url 'index' %}">Dashboard</a> / <a href="{% url 'get-user' %}">Server User</a> / <span class="active">Add User</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" style="font-weight: 600; color: brown;">Add User</div>
+                            <div class="card-body card-block">
+
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="post" class="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="username" class="form-label">Username</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="username" name="username" placeholder="Enter username" class="form-control" required>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Please choose a username.
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="email" class="form-label">Email ID</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="email" name="email" placeholder="Enter email id" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <lable for="first_name" class="form-label">First Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="first_name" name="fname" placeholder="Enter first name" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6">
+                                            <lable for="last_name" class="form-label">Last Name</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="last_name" name="lname" placeholder="Enter last name" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-lg-4">
+                                            <lable for="phone" class="form-label">Phone Number</lable>
+                                            <div class="input-group" style="margin-top: 7px;">
+                                                <input type="text" id="phone" name="phone" placeholder="Enter mobile number" class="form-control">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-phone"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <lable for="phone" class="form-label">Upload photo</lable>
+                                            <div class="photo" style="margin-top: 7px;">
+                                                <input type="file" id="photo" name="photo" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <lable for="gender" class="form-label">Gender</lable>
+                                            <div style="margin-top: 7px;">
+                                                <select name="gender" id="gender" class="form-control">
+                                                    <option value="">Please select gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-lg-4">
+                                            <lable for="phone" class="form-label">Role</lable>
+                                            <div style="margin-top: 7px;">
+                                                <select name="role" id="select" class="form-control" required>
+                                                    <option value="0">Please select role</option>
+                                                    <option value="1">User</option>
+                                                    {% if user.is_superuser %}
+                                                    <option value="2">Distributer</option>
+                                                    <option value="3">Admin</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions form-group">
+                                        <button type="submit" class="btn btn-secondary btn-sm">Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'adminbase/footer.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock mainContent %}
+
+{% block custom_js %}
+
+<script>
+  function changepass(obj) {
+      if($(obj).is(":checked")){
+          document.getElementById('myDIV').style.display = "block"; //Do stuff
+          //alert("Yes checked"); //when checked
+
+          $("#page-header-inner").addClass("sticky");
+      }else{
+          document.getElementById('myDIV').style.display = "none"; //Do stuff
+          //alert("Not checked"); //when not checked
+      }   
+  }
+</script>
+
+{% endblock custom_js %}

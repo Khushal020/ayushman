@@ -1,0 +1,145 @@
+{% extends 'adminbase/base.html' %}
+{% load static %}
+{% block pagetitle %}Download Limit List{% endblock pagetitle %}
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+{% block mainContent %}
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <div class="row m-t-30">
+                            <div class="col-md-12">
+                                <!-- DATA TABLE-->
+                                <h3 class="title-5 m-b-20">Limit list</h3>
+                                
+                                {% if messages %}
+                                {% for m in messages %}
+                                    {% if m.tags == 'success' %}
+                                    <div style="display: block;" class="alert alert-success alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Great!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div style="display: block;" class="alert alert-danger alert-dismissible fade show" role="alert" id="remove_alert">
+                                    <strong>Upps!</strong> {{m}}
+                                    <button type="button" class="btn-close" onclick="remove_alert()" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <!-- <div class="row form-group" style="margin-left:1px;">
+                                    <a href="{% url 'add-state' %}"><button class="au-btn-filter" type="submit"><i class="fa fa-plus"></i>ADD</button></a>
+                                </div> -->
+                                <div class="table-responsive m-b-40">
+                                    <table class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Limit/Day</th>
+                                                <th>Remaining Today's Limit</th>
+                                                <th>Created At</th>
+                                                <th>Deleted At</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            {% if limitlist %}
+                                                {% for limit in limitlist %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    
+                                                    <td>{{limit.distributer.username}}</td>
+                                                    <td>{{limit.distributer.email}}</td>
+                                                    <td>{{limit.limit}}</td>
+                                                    <td>{{limit.remaining_limit}}</td>
+
+                                                    <td>{{limit.created_at|date:'d-m-Y g:i A'}}</td>
+                                                    <td>{{limit.updated_at|date:'d-m-Y g:i A'}}</td>
+
+                                                    <td>
+                                                        <a href="{% url 'view-download-docs' %}?id={{limit.id}}" style="padding: 5px;">
+                                                            <button class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></button>
+                                                        </a>
+                                                        <a href="{% url 'update-limit' %}?id={{limit.id}}" style="padding: 5px;">
+                                                            <button class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o"></i></button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                            <tr><td colspan="8" style="text-align: center; font-size: 15px;">No Data Found</td></tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE-->
+
+                                {% if limitlist.has_other_pages %}
+                                <hr style="padding-bottom: 4px; background-color: brown;" />
+                                <div class="page" style="margin-right: 20px;">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-end">
+                                            {% if not limitlist.has_previous %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ limitlist.previous_page_number }}" tabindex="-1">Previous</a>
+                                            </li>
+                                            {% endif %}
+
+                                            {% if limitlist.number|add:'-4' > 1 %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ limitlist.number|add:'-5' }}">&hellip;</a></li>
+                                            {% endif %}
+
+                                            {% for i in limitlist.paginator.page_range %}
+                                                {% if limitlist.number == i %}
+                                                    <li class="page-item active" aria-current="page">
+                                                <span class="page-link">
+                                                    {{ i }}
+                                                    <span class="sr-only">(current)</span>
+                                                </span>
+                                                </li>
+                                                {% elif i > limitlist.number|add:'-5' and i < limitlist.number|add:'5' %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if limitlist.paginator.num_pages > limitlist.number|add:'4' %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ limitlist.number|add:'5' }}">&hellip;</a></li>
+                                            {% endif %}
+
+                                            {% if limitlist.has_next %}
+                                            <li class="page-item">
+                                            <a class="page-link" href="?page={{ limitlist.next_page_number }}">Next</a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" tabindex="+1">Next</a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        {% include 'adminbase/footer.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock mainContent %}
